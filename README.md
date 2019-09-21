@@ -27,7 +27,19 @@ def test_fitting():
   assert dataset.build_item_features([]).getnnz() == items
   
 def test_fitting_no_identity():
+    
+  users, items = 10, 100
   
+  dataset = Dataset(user_identity_features=False, items_identity_features=False)
+  dataset.fit(range(users), range(items))
+  
+  assert dataset.interactions_shape() == (users, items)
+  assert dataset.user_features_shape() == (users, 0)
+  assert dataset.item_features_shape() == (items, 0)
+  
+  assert dataset.build_interactions([])[0].shape == (users, items)
+  assert dataset.build_user_features([], normalize=False).getnnz() == 0
+  assert dataset.build_item_features([], normalize=False).getnnz() == 0
   
 def test_build_features():
   
